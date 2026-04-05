@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from database.connection_pool import get_db_connection
 from fpdf import FPDF
@@ -6,11 +7,14 @@ from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import (JWTManager, create_access_token, jwt_required, get_jwt_identity)
 from video_service import register_socketio_events, start_video, db_work
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
-app.config["SECRET_KEY"] = "secret_key"
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
