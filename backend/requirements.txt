@@ -1,0 +1,10 @@
+flask # for creating the web application
+mysql-connector-python # for database connectivity
+FPDF # for PDF generation
+flask-socketio # for real-time communication between server and client
+ultralytics # for model inference
+opencv-python # for video processing
+flask-bcrypt # for password hashing
+flask-jwt-extended # for handling JSON Web Tokens (JWT) for authentication
+flask-cors # for handling Cross-Origin Resource Sharing (CORS) in Flask applications
+python-dotenv # for loading environment variables from a .env file
