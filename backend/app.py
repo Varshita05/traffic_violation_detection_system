@@ -19,7 +19,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
-socketio = SocketIO(app, cors_allowed_origins=("http://localhost:5173", "https://traffic-violation-detection-system-kappa.vercel.app/"), async_mode='threading', allow_unsafe_werkzeug=True)
+socketio = SocketIO(app, cors_allowed_origins=("http://localhost:5173", "https://traffic-violation-detection-system-kappa.vercel.app/"), async_mode='threading')
 
 # method to run sql queries
 def run_query(query, params=None, fetch=True, commit=False):
@@ -258,5 +258,5 @@ if __name__ == '__main__':
     # start video processing
     start_video(socketio)
     
-    socketio.run(app, port=5000, debug=False)
+    socketio.run(app, port=5000, debug=False, allow_unsafe_werkzeug=True)
     socketio.start_background_task(db_work)
