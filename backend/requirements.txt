@@ -8,5 +8,4 @@ flask-bcrypt # for password hashing
 flask-jwt-extended # for handling JSON Web Tokens (JWT) for authentication
 flask-cors # for handling Cross-Origin Resource Sharing (CORS) in Flask applications
 python-dotenv # for loading environment variables from a .env file
-urllib3 # for making HTTP requests
-gdownloader # for downloading files from Google Drive
+gdown # for downloading files from Google Drive

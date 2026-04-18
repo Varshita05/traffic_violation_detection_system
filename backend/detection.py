@@ -2,7 +2,7 @@ import time
 import cv2
 from ultralytics import YOLO
 import os
-from gdownloader import GoogleDriveDownloader as gdd
+from gdown import GoogleDriveDownloader as gdd
 
 MODEL_PATH = "models/yolov11n.pt"
 MODEL_URL = "https://drive.google.com/file/d/1Rr5nFzbs81p4UNPBqBpZsK7Gq7fH1S9Q/view?usp=sharing"
