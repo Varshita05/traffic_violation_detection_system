@@ -1,5 +1,3 @@
-from os import path
-
 import cv2
 import base64 
 import threading
@@ -16,7 +14,7 @@ VIDEO_URL = "https://drive.google.com/file/d/1bRDgldrsv7uq0mT-f8gvbt9MqrYZ2R1q/v
 
 os.makedirs("data", exist_ok=True)
 
-def download_video():
+def download_video(url, path):
     print("Downloading video...")
 
     with requests.get(url, stream=True, timeout=30) as r:
