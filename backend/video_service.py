@@ -3,11 +3,12 @@ import base64
 import threading
 import os
 import gdown
+import psutil
 
 from detection import detect_vehicles
 from queue import Queue
 from database.connection_pool import get_db_connection
-
+from detection import release_model
 
 VIDEO_PATH = "data/traffic.mp4"
 FILE_ID = "1bRDgldrsv7uq0mT-f8gvbt9MqrYZ2R1q"
@@ -63,6 +64,8 @@ def start_video(socketio):
             print("Error opening video file")
             return
 
+        frame_count = 0
+
         while True:
             ret, frame = cap.read()
             
@@ -77,9 +80,16 @@ def start_video(socketio):
 
             frame = cv2.resize(frame, (640, 480))
 
+            frame_count += 1
+
             violations = []
 
             if detect_enabled:
+
+                if frame_count % 3 != 0:
+                    socketio.sleep(1 / fps)
+                    continue
+
                 frame, violations, vehicle_ids = detect_vehicles(
                     frame, track_time, 
                     seen_vehicles, violated_vehicles, violation_log, 
@@ -114,8 +124,7 @@ def start_video(socketio):
 
     threading.Thread(target=video_loop, daemon=True).start()
     threading.Thread(target=db_work, daemon=True).start()
-
-
+    
 # SOCKET EVENTS
 def register_socketio_events(socketio):
 
@@ -132,6 +141,8 @@ def register_socketio_events(socketio):
     def stop_detection():
         global detect_enabled
         detect_enabled = False
+
+        release_model()
 
     @socketio.on("update_settings")
     def update_settings(data):

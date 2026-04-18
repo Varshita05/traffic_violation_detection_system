@@ -1,23 +1,52 @@
 import time
 import cv2
-from ultralytics import YOLO
-import os
-import gdown
+
+from utils.memory import print_memory_usage
 
 MODEL_PATH = "models/yolov11n.pt"
 MODEL_URL = "https://drive.google.com/file/d/1Rr5nFzbs81p4UNPBqBpZsK7Gq7fH1S9Q/view?usp=sharing"
 
-os.makedirs("models", exist_ok=True)
+vehicle_model = None
 
-if not os.path.exists(MODEL_PATH):
-    print("Downloading model...")
-    gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+def get_model():
+    global vehicle_model
 
-vehicle_model = YOLO(MODEL_PATH)
+    if vehicle_model is None:
+        import os, gdown
+        from ultralytics import YOLO
+
+        os.makedirs("models", exist_ok=True)
+
+        if not os.path.exists(MODEL_PATH):
+            print("Downloading model...")
+            gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+
+        print("Loading YOLO model...")
+        vehicle_model = YOLO(MODEL_PATH)
+        vehicle_model.to("cpu")
+
+    return vehicle_model
+
+
+def release_model():
+    global vehicle_model
+    if vehicle_model is not None:
+        print("Releasing YOLO model...")
+        del vehicle_model
+        vehicle_model = None
+
+        import gc
+        gc.collect()
+
+print_memory_usage("Before Model Load")
+
+vehicle_model = get_model().to("cpu")
+
+print_memory_usage("After Model Load")
 
 speed_limit = 30
 pixel_distance = 0.05
-fps = 30
+fps = 10
 violated_vehicles = set()
 
 def calculate_speed(vid, cy, track_time):

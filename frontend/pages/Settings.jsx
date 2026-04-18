@@ -11,7 +11,7 @@ export default function Settings() {
         ocrLanguage: "English (India)",
         trackingAlgorithm: "DeepSORT",
         detectionModel: "YOLOv11",
-        cameraFPS: 30,
+        cameraFPS: 10,
         autoFine: true,
       };
 });
@@ -89,7 +89,7 @@ const handleSave = (e) => {
             <input
               type="number"
               value={settings.cameraFPS}
-              onChange={(e) => handleChange("cameraFPS", e.target.value)}
+              onChange={(e) => handleChange("cameraFPS", Math.min(10, parseInt(e.target.value) || 10))}
               className="w-full border p-2 rounded mt-1"
             />
           </div>
