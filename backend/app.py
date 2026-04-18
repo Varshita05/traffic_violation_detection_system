@@ -19,7 +19,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
-socketio = SocketIO(app, cors_allowed_origins=("http://localhost:5173", "https://traffic-violation-detection-system-kappa.vercel.app/"), async_mode='threading')
+socketio = SocketIO(app, cors_allowed_origins=("http://localhost:5173", "https://traffic-violation-detection-system-kappa.vercel.app/"), async_mode='threading', allow_unsafe_werkzeug=True)
 
 # method to run sql queries
 def run_query(query, params=None, fetch=True, commit=False):

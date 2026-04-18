@@ -1,8 +1,10 @@
+from os import path
+
 import cv2
 import base64 
 import threading
 import os
-import urllib.request
+import requests
 
 from detection import detect_vehicles
 from queue import Queue
@@ -14,9 +16,30 @@ VIDEO_URL = "https://drive.google.com/file/d/1bRDgldrsv7uq0mT-f8gvbt9MqrYZ2R1q/v
 
 os.makedirs("data", exist_ok=True)
 
-if not os.path.exists(VIDEO_PATH):
+def download_video():
     print("Downloading video...")
-    urllib.request.urlretrieve(VIDEO_URL, VIDEO_PATH)
+
+    with requests.get(url, stream=True, timeout=30) as r:
+        r.raise_for_status()
+
+        # Check content type (VERY IMPORTANT)
+        content_type = r.headers.get("Content-Type", "")
+        if "video" not in content_type:
+            raise Exception(f"Invalid file type: {content_type}")
+
+        with open(path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+
+    # Validate file size
+    if os.path.getsize(path) < 500000:  # <500KB → likely broken
+        os.remove(path)
+        raise Exception("Downloaded video is too small / corrupted")
+
+# Download only if missing or corrupted
+if not os.path.exists(VIDEO_PATH):
+    download_video(VIDEO_URL, VIDEO_PATH)
 
 fps = 30
 speed_limit = 60
