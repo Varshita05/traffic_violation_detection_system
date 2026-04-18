@@ -2,7 +2,7 @@ import time
 import cv2
 from ultralytics import YOLO
 import os
-import urllib.request
+from gdownloader import GoogleDriveDownloader as gdd
 
 MODEL_PATH = "models/yolov11n.pt"
 MODEL_URL = "https://drive.google.com/file/d/1Rr5nFzbs81p4UNPBqBpZsK7Gq7fH1S9Q/view?usp=sharing"
@@ -11,7 +11,7 @@ os.makedirs("models", exist_ok=True)
 
 if not os.path.exists(MODEL_PATH):
     print("Downloading model...")
-    urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
+    gdd.download(MODEL_URL, MODEL_PATH, quiet=False)
 
 vehicle_model = YOLO(MODEL_PATH)
 
