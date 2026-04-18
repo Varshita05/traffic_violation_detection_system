@@ -2,7 +2,7 @@ import cv2
 import base64 
 import threading
 import os
-import requests
+import gdown
 
 from detection import detect_vehicles
 from queue import Queue
@@ -10,34 +10,13 @@ from database.connection_pool import get_db_connection
 
 
 VIDEO_PATH = "data/traffic.mp4"
-VIDEO_URL = "https://drive.google.com/file/d/1bRDgldrsv7uq0mT-f8gvbt9MqrYZ2R1q/view?usp=sharing"
+FILE_ID = "1bRDgldrsv7uq0mT-f8gvbt9MqrYZ2R1q"
 
 os.makedirs("data", exist_ok=True)
 
-def download_video(url, path):
-    print("Downloading video...")
-
-    with requests.get(url, stream=True, timeout=30) as r:
-        r.raise_for_status()
-
-        # Check content type (VERY IMPORTANT)
-        content_type = r.headers.get("Content-Type", "")
-        if "video" not in content_type:
-            raise Exception(f"Invalid file type: {content_type}")
-
-        with open(path, "wb") as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
-
-    # Validate file size
-    if os.path.getsize(path) < 500000:  # <500KB → likely broken
-        os.remove(path)
-        raise Exception("Downloaded video is too small / corrupted")
-
-# Download only if missing or corrupted
 if not os.path.exists(VIDEO_PATH):
-    download_video(VIDEO_URL, VIDEO_PATH)
+    print("Downloading video from Google Drive...")
+    gdown.download(f"https://drive.google.com/uc?id={FILE_ID}", VIDEO_PATH, quiet=False)
 
 fps = 30
 speed_limit = 60
