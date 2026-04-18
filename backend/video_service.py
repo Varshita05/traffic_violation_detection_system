@@ -1,12 +1,22 @@
 import cv2
 import base64 
 import threading
+import os
+import urllib.request
 
 from detection import detect_vehicles
 from queue import Queue
 from database.connection_pool import get_db_connection
 
-VIDEO_PATH = "C:\\Users\\JANARDHANA RAO\\Downloads\\Capstone\\traffic_violation_system\\data\\input_videos\\traffic.mp4"
+
+VIDEO_PATH = "data/traffic.mp4"
+VIDEO_URL = "https://drive.google.com/file/d/1bRDgldrsv7uq0mT-f8gvbt9MqrYZ2R1q/view?usp=sharing"
+
+os.makedirs("data", exist_ok=True)
+
+if not os.path.exists(VIDEO_PATH):
+    print("Downloading video...")
+    urllib.request.urlretrieve(VIDEO_URL, VIDEO_PATH)
 
 fps = 30
 speed_limit = 60

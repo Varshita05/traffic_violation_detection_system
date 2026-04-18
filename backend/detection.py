@@ -1,8 +1,19 @@
 import time
 import cv2
 from ultralytics import YOLO
+import os
+import urllib.request
 
-vehicle_model = YOLO("../models/yolov11n.pt")
+MODEL_PATH = "models/yolov11n.pt"
+MODEL_URL = "https://drive.google.com/file/d/1Rr5nFzbs81p4UNPBqBpZsK7Gq7fH1S9Q/view?usp=sharing"
+
+os.makedirs("models", exist_ok=True)
+
+if not os.path.exists(MODEL_PATH):
+    print("Downloading model...")
+    urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
+
+vehicle_model = YOLO(MODEL_PATH)
 
 speed_limit = 30
 pixel_distance = 0.05
